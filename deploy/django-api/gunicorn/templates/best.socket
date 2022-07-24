@@ -1,0 +1,8 @@
+[Unit]
+Description=best socket
+
+[Socket]
+ListenStream={{run_sock_file}}
+
+[Install]
+WantedBy=sockets.target

@@ -1,0 +1,27 @@
+# - name: Create main dirs for {{etcdir}}
+#   file:
+#     path: "{{etcdir}}"
+#     state: directory
+
+- name: Create socket file
+  template:
+    src: best.socket
+    dest: "/etc/systemd/system/best.socket"
+
+
+- name: Copy best system unit
+  template:
+    src: best.service
+    dest: /etc/systemd/system/best.service
+
+- name: start best socket
+  systemd:
+    name: best.socket
+    state: started
+    enabled: yes
+
+# - name: restart best service
+#   systemd:
+#     name: best.service
+#     state: restarted
+#     enabled: yes  

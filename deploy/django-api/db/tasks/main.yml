@@ -1,0 +1,26 @@
+- name: Install Postgresql Server
+  apt: # apt-get update && apt-get install ...
+    name:
+      - postgresql
+      - postgresql-contrib
+      - libpq-dev
+      - python3-psycopg2
+      - acl
+    state: present
+    update_cache: yes
+
+- name: Create DB user
+  postgresql_user:
+    state: present
+    name: "{{db_user}}"
+    password: "{{db_pass}}"
+  become: true
+  become_user: postgres
+
+- name: Create DB instance
+  postgresql_db:
+    state: present
+    name: "{{db_name}}"
+    owner: "{{db_user}}"
+  become: true
+  become_user: postgres

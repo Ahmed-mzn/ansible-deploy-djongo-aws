@@ -1,0 +1,22 @@
+- hosts: best
+  gather_facts: no
+  become: True
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    gunicorn_port: 8000
+    db_user: "user4"
+    db_name: "database4"
+    db_pass: "1234"
+    domain: "best.ahmedzeini.com"
+    projectdir: "/home/ubuntu/api-for-aws-server"
+    run_sock_file: "/run/best.sock"
+    service_file: "/etc/systemd/system/best.service"
+  roles:
+    - role: 'deploy/django-api/db'
+      tags: ['db']
+    - role: 'deploy/django-api/app'
+      tags: ['app']
+    - role: 'deploy/django-api/gunicorn'
+      tags: ['gunicorn']
+    - role: 'deploy/django-api/nginx'
+      tags: ['nginx']

@@ -1,0 +1,21 @@
+---
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Copy {{domain}}
+  template:
+    src: 'best.ahmedzeini.com'
+    dest: /etc/nginx/sites-available/
+
+- name: Activate the {{domain}} site
+  file: 
+    src: /etc/nginx/sites-available/{{domain}}
+    dest: /etc/nginx/sites-enabled/{{domain}}
+    state: link
+
+- name: Restart nginx.service
+  systemd:
+    state: restarted
+    name: nginx

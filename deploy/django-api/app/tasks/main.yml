@@ -1,0 +1,45 @@
+- name: Install Python packages
+  apt: # apt-get update && apt-get install ...
+    name:
+      - python3-venv
+      - python3-dev
+    state: present
+    update_cache: yes
+- name: Clone django project repository
+  git:
+    repo: "git@github.com:Ahmed-mzn/api-for-aws-server.git"
+    dest: "{{projectdir}}"
+    version: master
+  become_user: ubuntu
+
+- name: Create virtualenv and run pip install -r requirements
+  pip:
+    virtualenv: "{{projectdir}}/venv"
+    requirements: "{{projectdir}}/requirements.txt"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+  become_user: ubuntu
+
+- name: Run migrate
+  django_manage:
+    command: migrate
+    app_path: "{{projectdir}}"
+    virtualenv: "{{projectdir}}/venv"
+  become_user: ubuntu
+
+# - name: Creates static directory
+#   file:
+#     path: /var/www/static
+#     state: directory
+#     owner: www-data
+#     group: www-data
+#     mode: 0775
+
+- name: Run collectstatic
+  django_manage:
+    command: collectstatic
+    app_path: "{{projectdir}}"
+    virtualenv: "{{projectdir}}/venv"
+  become_user: ubuntu
+
+- name: copy static folder to public folder acces by nginx
+  command: cp -r /home/ubuntu/static /var/www

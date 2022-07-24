@@ -1,0 +1,17 @@
+[Unit]
+Description=best daemon
+Requires=best.socket
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory={{projectdir}}
+ExecStart={{projectdir}}/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:{{run_sock_file}} \
+          pizza.wsgi:application
+
+[Install]
+WantedBy=multi-user.targe
